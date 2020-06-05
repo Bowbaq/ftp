@@ -47,15 +47,16 @@ type DialOption struct {
 
 // dialOptions contains all the options set by DialOption.setup
 type dialOptions struct {
-	context     context.Context
-	dialer      net.Dialer
-	tlsConfig   *tls.Config
-	explicitTLS bool
-	conn        net.Conn
-	disableEPSV bool
-	location    *time.Location
-	debugOutput io.Writer
-	dialFunc    func(network, address string) (net.Conn, error)
+	context           context.Context
+	dialer            net.Dialer
+	tlsConfig         *tls.Config
+	explicitTLS       bool
+	conn              net.Conn
+	disableEPSV       bool
+	disableBinaryMode bool
+	location          *time.Location
+	debugOutput       io.Writer
+	dialFunc          func(network, address string) (net.Conn, error)
 }
 
 // Entry describes a file and is returned by List().
@@ -173,6 +174,14 @@ func DialWithNetConn(conn net.Conn) DialOption {
 func DialWithDisabledEPSV(disabled bool) DialOption {
 	return DialOption{func(do *dialOptions) {
 		do.disableEPSV = disabled
+	}}
+}
+
+// DialWithBinaryModeDisabled returns a DialOption that configures the ServerConn without binary mode (TYPE I)
+// Binary mode is enabled by default
+func DialWithBinaryModeDisabled() DialOption {
+	return DialOption{func(do *dialOptions) {
+		do.disableBinaryMode = true
 	}}
 }
 
